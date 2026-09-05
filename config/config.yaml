@@ -44,4 +44,4 @@ huggingface:
 
 # Training
 training:
-  train_size: 350000
+  train_size: 10000
