@@ -1,0 +1,12 @@
+torch>=2.1
+transformers>=4.44
+datasets>=2.19
+huggingface_hub>=0.24
+sentencepiece>=0.2.1
+evaluate>=0.4.2
+sacrebleu>=2.4          # backend cho metric "sacrebleu" va "ter"
+nltk>=3.9                # backend cho metric "meteor" (can tai wordnet, xem README)
+pandas>=2.0
+numpy>=1.26
+PyYAML>=6.0
+tqdm>=4.66

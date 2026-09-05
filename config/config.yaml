@@ -1,0 +1,47 @@
+# Cấu hình dùng chung cho toàn bộ project
+
+# Đường dẫn thư mục
+paths:
+  project_root: ".."
+  data_dir: "data"
+  processed_dir: "data/processed"
+  clean_dataset_dir: "data/processed/med_dataset_clean"
+  tokenized_train_dir: "data/processed/tokenized_train"
+  tokenized_val_dir: "data/processed/tokenized_val_en_vi"
+  checkpoint_dir: "checkpoints"
+  final_model_dir: "checkpoints/final"
+  results_dir: "results"
+  figures_dir: "outputs/figures"
+
+# Model / tokenizer
+model:
+  base_model_repo: "VietAI/envit5-base"
+
+# Độ dài chuỗi
+sequence_length:
+  max_source_length: 256
+  max_target_length: 256
+
+# Nguồn dữ liệu MedEV
+dataset:
+  hf_dataset_repo: "nhuvo/MedEV"
+
+  data_files_en:
+    train: "train.en.txt"
+    validation: "val.en.new.txt"
+    test: "test.en.new.txt"
+
+  data_files_vi:
+    train: "train.vi.txt"
+    validation: "val.vi.new.txt"
+    test: "test.vi.new.txt"
+
+# Hugging Face Hub
+huggingface:
+  checkpoint_repo: "ndhieu1101/medical-bidirectional-machine-translation-checkpoints"
+  final_model_repo: "ndhieu1101/medical-bidirectional-machine-translation"
+  push_to_hub: true
+
+# Training
+training:
+  train_size: 350000

@@ -1,0 +1,7 @@
+# Data & model artifacts
+data/
+checkpoints/
+outputs/
+
+# Python
+__pycache__/
