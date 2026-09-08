@@ -90,7 +90,7 @@ def build_training_args() -> Seq2SeqTrainingArguments:
         gradient_checkpointing=False,
         label_smoothing_factor=0.1,
         weight_decay=0.01,
-        num_train_epochs=5,
+        num_train_epochs=config["training"].get("num_train_epochs", 5),
         generation_max_length=config["sequence_length"]["max_target_length"],
         generation_num_beams=2,
         lr_scheduler_type="cosine",
