@@ -40,7 +40,7 @@ def evaluate_direction(model, tokenizer, device, dataset, src_col, tgt_col, pref
         with torch.no_grad():
             outputs = model.generate(**inputs, max_length = max_length, num_beams = 4, early_stopping = True)
 
-        decoded = tokenizer.batch_decode(outputs, skip_special_tokens = True)
+        decoded = [metrics.strip_lang_prefix(d) for d in tokenizer.batch_decode(outputs, skip_special_tokens = True)]
         preds.extend(decoded)
         refs.extend(batch[tgt_col])
 
@@ -122,5 +122,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
