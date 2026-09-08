@@ -103,10 +103,10 @@ def main():
     test_set = med_dataset["test"]
 
     en_vi_preds, en_vi_refs, en_vi_metrics = evaluate_direction(
-        model, tokenizer, device, test_set, "en", "vi", "en-vi: ", batch_size=args.batch_size
+        model, tokenizer, device, test_set, "en", "vi", "en: ", batch_size=args.batch_size
     )
     vi_en_preds, vi_en_refs, vi_en_metrics = evaluate_direction(
-        model, tokenizer, device, test_set, "vi", "en", "vi-en: ", batch_size=args.batch_size
+        model, tokenizer, device, test_set, "vi", "en", "vi: ", batch_size=args.batch_size
     )
 
     _write_results_md(

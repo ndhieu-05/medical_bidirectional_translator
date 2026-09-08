@@ -13,10 +13,10 @@ def preprocess_function(batch, tokenizer, max_source_length, max_target_length):
     targets = []
 
     for en, vi in zip(batch["en"], batch["vi"]):
-        inputs.append("en-vi: " + en)
+        inputs.append("en: " + en)
         targets.append(vi)
 
-        inputs.append("vi-en: " + vi)
+        inputs.append("vi: " + vi)
         targets.append(en)
 
     model_inputs =  tokenizer(inputs, max_length = max_source_length, truncation = True)

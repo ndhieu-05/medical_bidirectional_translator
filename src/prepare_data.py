@@ -51,7 +51,7 @@ def main():
         preprocessing.preprocess_direction,
         src_col="en",
         tgt_col="vi",
-        prefix="en-vi: ",
+        prefix="en: ",
         tokenizer=tokenizer,
         max_source_length=config["sequence_length"]["max_source_length"],
         max_target_length=config["sequence_length"]["max_target_length"]

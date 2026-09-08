@@ -1,8 +1,17 @@
 """
 Hàm tính BLEU / METEOR / TER, dùng chung cho train.py và evaluate.py
 """
-
+import re
 import numpy as np
+
+
+_LANG_PREFIX_RE = re.compile(r"^(en|vi)\s*:\s*", flags=re.IGNORECASE) # Fix không cắt prefix model tự sinh lại trong output
+
+def strip_lang_prefix(text:str)->str:
+    """envit5 doi khi tu sinh lai prefix ngon ngu dich (vd 'en: ...') o dau output.
+    Can cat bo truoc khi so voi cau tham chieu (khong co prefix), neu khong BLEU/METEOR
+    se bi tinh sai (so sanh lech 1-2 token dau moi cau)."""
+    return _LANG_PREFIX_RE.sub("", text).strip()
 
 def load_metrics():
     """
@@ -43,14 +52,14 @@ def build_compute_metrics(tokenizer):
 
         
         decoded_preds = [
-            p.strip() # Xóa whitespace đầu/cuối sau khi đã decode token thành câu
+            strip_lang_prefix(p) # Cat bo prefix "en: "/"vi: " model tu sinh lai (neu co) truoc khi so sanh
             for p in tokenizer.batch_decode(
                 preds,
                 skip_special_tokens=True
             ) # Chuyển nhiều chuỗi token ID thành nhiều câu text
         ]
         decoded_labels = [
-            l.strip() 
+            l.strip()
             for l in tokenizer.batch_decode(
                 labels, 
                 skip_special_tokens=True
