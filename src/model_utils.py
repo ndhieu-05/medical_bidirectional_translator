@@ -32,7 +32,7 @@ def load_base_tokenizer_and_model(model_repo: str = config["model"]["base_model_
 
     path = snapshot_download(model_repo, ignore_patterns=["tokenizer.json"])
 
-    tokenizer = T5Tokenizer.from_pretrained(path, use_fast = False)
+    tokenizer = T5Tokenizer.from_pretrained(path, use_fast = False, legacy = False)
     model = AutoModelForSeq2SeqLM.from_pretrained(path).to(device)
 
     return tokenizer, model, device
@@ -45,7 +45,7 @@ def load_finetuned_tokenizer_and_model(model_name: str, device: str  | None = No
 
     device = device or get_device()
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, legacy=False)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
     model.eval()
 
