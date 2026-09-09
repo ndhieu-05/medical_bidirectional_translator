@@ -1,5 +1,5 @@
 torch>=2.1
-transformers>=4.44
+transformers>=4.44,<5.0
 datasets>=2.19
 huggingface_hub>=0.24
 sentencepiece>=0.2.1
