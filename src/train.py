@@ -103,6 +103,7 @@ def build_training_args() -> Seq2SeqTrainingArguments:
         metric_for_best_model="bleu",
         greater_is_better=True,
         logging_steps=100,
+        disable_tqdm=True,
         report_to="none",
         push_to_hub=config["huggingface"]["push_to_hub"],
         hub_model_id=config["huggingface"]["checkpoint_repo"] if config["huggingface"]["push_to_hub"] else None,

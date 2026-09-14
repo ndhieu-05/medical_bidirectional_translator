@@ -8,8 +8,14 @@ CONFIG_PATH = Path("config/config.yaml")
 SWEEP_RESULTS_PATH = Path("sweep_results.json")
 
 # ---- Cấu hình sweep ----
-TRAIN_SIZES = [200, 1000]
-SWEEP_EPOCHS = 20   
+TRAIN_SIZES = [
+    68_138,    # 10%
+    170_348,   # 25%
+    340_694,   # 50%
+    511_042,   # 75%
+    681_388,   # 100%
+]
+SWEEP_EPOCHS = 3
  
  
 def run(cmd: str):
