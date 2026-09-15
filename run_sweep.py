@@ -74,7 +74,10 @@ for size in TRAIN_SIZES:
     cfg["paths"]["checkpoint_dir"] = ckpt_dir
     cfg["paths"]["final_model_dir"] = f"{ckpt_dir}/final"
     cfg["paths"]["results_dir"] = results_dir
-    cfg["huggingface"]["push_to_hub"] = False   # QUAN TRỌNG: tắt để không lẫn checkpoint giữa các lần
+    cfg["huggingface"]["push_to_hub"] = True
+    cfg["huggingface"]["checkpoint_repo"] = (
+        f"ndhieu1101/medical-bidirectional-machine-translation-checkpoints-{size}"
+    )   # QUAN TRỌNG: tắt để không lẫn checkpoint giữa các lần
     CONFIG_PATH.write_text(yaml.dump(cfg, allow_unicode=True), encoding="utf-8")
  
     # 2. Train (subprocess mới -> đọc config vừa sửa)
