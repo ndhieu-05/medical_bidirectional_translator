@@ -141,11 +141,28 @@ def main():
     last_checkpoint = None
     if config["huggingface"]["push_to_hub"]:
         try:
-            snapshot_download(
-                repo_id=config["huggingface"]["checkpoint_repo"],
-                local_dir=config["paths"]["checkpoint_dir"],
-                local_dir_use_symlinks=False,
-            )
+            from huggingface_hub import HfApi
+            import re as _re
+
+            files = HfApi().list_repo_files(config["huggingface"]["checkpoint_repo"])
+            folders = {f.split("/")[0] for f in files if "/" in f}
+
+            if "last-checkpoint" in folders:
+                target_folder = "last-checkpoint"
+            else:
+                ckpt_folders = [f for f in folders if _re.fullmatch(r"checkpoint-\d+", f)]
+                target_folder = max(ckpt_folders, key=lambda x: int(x.split("-")[1])) if ckpt_folders else None
+
+            if target_folder:
+                snapshot_download(
+                    repo_id=config["huggingface"]["checkpoint_repo"],
+                    local_dir=config["paths"]["checkpoint_dir"],
+                    local_dir_use_symlinks=False,
+                    allow_patterns=[f"{target_folder}/*"],   # CHI tai dung 1 checkpoint can, khong tai het lich su
+                )
+                print(f"-> Đã tải checkpoint để resume: {target_folder}")
+            else:
+                print("-> Repo trên Hub chưa có checkpoint nào, sẽ train từ đầu.")
         except Exception as e:
             print("-> Chưa có checkpoint trên Hub hoặc lỗi kết nối:", e)
 
