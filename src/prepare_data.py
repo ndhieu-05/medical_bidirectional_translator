@@ -27,6 +27,7 @@ def main():
 
     print("== [2/4] Làm sạch dữ liệu (dedup, loại leakage, loại mislabeled) ==")
     clean_dataset = data_utils.build_clean_dataset(raw_dataset)
+    clean_dataset["train"] = clean_dataset["train"].shuffle(seed=42)
     clean_dataset.save_to_disk(config["paths"]["clean_dataset_dir"])
     print(f"-> Đã lưu Dataset đã làm sạch tại: {config["paths"]["clean_dataset_dir"]}")
     print(clean_dataset)
