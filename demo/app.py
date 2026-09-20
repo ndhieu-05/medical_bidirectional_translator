@@ -1,65 +1,45 @@
 """
 Demo dịch máy Anh <-> Việt chuyên ngành y khoa (fine-tune từ envit5-base trên bộ MedEV).
-Tự chứa để chạy trên Hugging Face Spaces - không phụ thuộc package `src`.
+Tự chứa (self-contained) để chạy trên Hugging Face Spaces - không phụ thuộc package `src`.
 """
-
+import spaces
 import gradio as gr
-import torch 
+import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 MODEL_REPO = "ndhieu1101/medical-bidirectional-machine-translation"
- 
-device = "cuda" if torch.cuda.is_available() else "cpu"
 
 print(f"Đang tải model từ {MODEL_REPO}...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_REPO, legacy = False)
-model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_REPO).to(device)
+
+tokenizer = AutoTokenizer.from_pretrained(
+    MODEL_REPO,
+    legacy=False,
+    use_fast=False,
+)
+
+model = AutoModelForSeq2SeqLM.from_pretrained(
+    MODEL_REPO
+).to("cuda")
+
 model.eval()
+
 print("Tải xong.")
+print("Model device:", next(model.parameters()).device)
+
 
 def strip_lang_prefix(text: str) -> str:
-    """Loại bỏ tiền tố ngôn ngữ ở đầu chuỗi.
+    text = text.strip()
 
-    Hàm hỗ trợ hai tiền tố ``en:`` và ``vi:``, không phân biệt chữ hoa
-    hay chữ thường. Các khoảng trắng ở đầu và cuối chuỗi cũng được loại bỏ.
+    for p in ("en:", "vi:", "EN:", "VI:"):
+        if text.startswith(p):
+            return text[len(p):].strip()
 
-    Args:
-        text: Chuỗi đầu vào có thể chứa tiền tố ngôn ngữ.
+    return text
 
-    Returns:
-        Chuỗi sau khi đã loại bỏ tiền tố ngôn ngữ nếu có.
-    """
-    
-    for p in ("en:", "vi:"):
-        if text.strip().lower().startswith(p):
-            return text.strip()[len(p):].strip()
-    return text.strip()
 
+@spaces.GPU
 def translate(text: str, direction: str) -> str:
-    """
-    Dịch văn bản giữa tiếng Anh và tiếng Việt bằng mô hình dịch máy.
-
-    Hàm xác định hướng dịch dựa trên giá trị của `direction`, thêm tiền tố
-    ngôn ngữ tương ứng vào văn bản đầu vào, sau đó sử dụng tokenizer và mô hình
-    để sinh ra bản dịch. Kết quả được giải mã thành chuỗi và loại bỏ tiền tố
-    ngôn ngữ trước khi trả về.
-
-    Args:
-        text (str): Văn bản cần dịch.
-        direction (str): Hướng dịch. Sử dụng "Anh -> Việt" để dịch từ
-            tiếng Anh sang tiếng Việt; các giá trị khác được xem là hướng
-            Việt sang Anh.
-
-    Returns:
-        str: Văn bản đã được dịch. Nếu `text` chỉ chứa khoảng trắng hoặc
-            rỗng, trả về chuỗi rỗng.
-
-    Note:
-        Hàm sử dụng biến `tokenizer`, `model` và `device` được định nghĩa
-        bên ngoài phạm vi của hàm.
-    """
-
-    if not text.strip():
+    if not text or not text.strip():
         return ""
 
     if direction == "English → Vietnamese":
@@ -67,14 +47,16 @@ def translate(text: str, direction: str) -> str:
     elif direction == "Vietnamese → English":
         prefix = "vi: "
     else:
-        raise ValueError(f"Invalid translation direction: {direction}")
+        raise ValueError(
+            f"Invalid translation direction: {direction}"
+        )
 
     inputs = tokenizer(
         prefix + text,
         return_tensors="pt",
         truncation=True,
         max_length=256,
-    ).to(device)
+    ).to("cuda")
 
     with torch.no_grad():
         outputs = model.generate(
@@ -82,8 +64,7 @@ def translate(text: str, direction: str) -> str:
             max_length=256,
             num_beams=4,
             early_stopping=True,
-            no_repeat_ngram_size=3,
-            repetition_penalty=1.3,
+            do_sample=False,
         )
 
     decoded = tokenizer.decode(
@@ -93,6 +74,8 @@ def translate(text: str, direction: str) -> str:
 
     return strip_lang_prefix(decoded)
 
+
+# Theme goes here, NOT inside demo.launch()
 with gr.Blocks(
     title="Medical Translation | English ↔ Vietnamese",
     theme=gr.themes.Soft(),
@@ -110,7 +93,6 @@ with gr.Blocks(
         """
     )
 
-    # Tạo một hàng trong giao diện Gradio
     with gr.Row():
         direction = gr.Radio(
             choices=[
@@ -137,7 +119,6 @@ with gr.Blocks(
                 interactive=False,
             )
 
-    # Nút Translate & Nút Clear    
     with gr.Row():
         translate_btn = gr.Button(
             "Translate",
@@ -154,23 +135,23 @@ with gr.Blocks(
     gr.Examples(
         examples=[
             [
-                "The patient was diagnosed with type 2 diabetes and hypertension.",
+                "The patient has a fever and a headache.",
                 "English → Vietnamese",
             ],
             [
-                "Bệnh nhân được chẩn đoán mắc đái tháo đường type 2 và tăng huyết áp.",
+                "Bệnh nhân có sốt và đau đầu.",
                 "Vietnamese → English",
             ],
         ],
         inputs=[input_text, direction],
     )
 
-    # Kết nối nút với hàm translate()
     translate_btn.click(
         fn=translate,
         inputs=[input_text, direction],
         outputs=output_text,
     )
+
 
 if __name__ == "__main__":
     demo.launch()
