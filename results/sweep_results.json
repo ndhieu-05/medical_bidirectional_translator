@@ -1,0 +1,62 @@
+[
+  {
+    "train_size_samples": 68138,
+    "approx_sentence_pairs": 34069,
+    "en -> vi": {
+      "bleu": 42.29,
+      "meteor": 0.6641,
+      "ter": 49.24
+    },
+    "vi -> en": {
+      "bleu": 32.73,
+      "meteor": 0.6065,
+      "ter": 60.54
+    },
+    "training_time": 11725.4492
+  },
+  {
+    "train_size_samples": 170348,
+    "approx_sentence_pairs": 85174,
+    "en -> vi": {
+      "bleu": 46.43,
+      "meteor": 0.6982,
+      "ter": 45.26
+    },
+    "vi -> en": {
+      "bleu": 36.4,
+      "meteor": 0.6386,
+      "ter": 56.29
+    },
+    "training_time": 31266.389
+  },
+  {
+    "train_size_samples": 340694,
+    "approx_sentence_pairs": 170347,
+    "en -> vi": {
+      "bleu": 48.56,
+      "meteor": 0.7154,
+      "ter": 43.24
+    },
+    "vi -> en": {
+      "bleu": 38.62,
+      "meteor": 0.6581,
+      "ter": 53.99
+    },
+    "training_time": 72801.2123
+  },
+  {
+    "train_size_samples": 511042,
+    "approx_sentence_pairs": 255521,
+    "en -> vi": {
+      "bleu": 49.55,
+      "meteor": 0.7229,
+      "ter": 42.39
+    },
+    "vi -> en": {
+      "bleu": 39.58,
+      "meteor": 0.6659,
+      "ter": 53.14
+    },
+    "training_time": 103426.96
+  }
+]
