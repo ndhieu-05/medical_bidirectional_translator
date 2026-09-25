@@ -7,3 +7,8 @@ outputs/
 __pycache__/
 .venv/
 
+# Generated outputs
+outputs/
+
+# Temporary/sample generated files
+results/sample_translations_*
